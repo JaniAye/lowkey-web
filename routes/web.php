@@ -13,3 +13,4 @@ Route::get('/auth/callback/{provider}', [SocialiteController::class, 'handleProv
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/videos/{id}', [App\Http\Controllers\HomeController::class, 'showVideo'])->name('videos.show');
