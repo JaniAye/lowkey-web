@@ -23,56 +23,28 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $videos = [
-            [
-                'id' => 1,
-                'title' => 'Laravel for Beginners',
-                'uploader' => 'CodeMaster',
-                'price' => 20,
-                'tags' => ['PHP', 'Laravel', 'Web Development'],
-                'thumbnail' => 'https://via.placeholder.com/350x150?text=Laravel+Course'
-            ],
-            [
-                'id' => 2,
-                'title' => 'Vue.js Crash Course',
-                'uploader' => 'FrontendGuru',
-                'price' => 25,
-                'tags' => ['JavaScript', 'Vue.js', 'Frontend'],
-                'thumbnail' => 'https://via.placeholder.com/350x150?text=Vue.js+Course'
-            ],
-            [
-                'id' => 3,
-                'title' => 'Understanding Docker',
-                'uploader' => 'DevOpsPro',
-                'price' => 30,
-                'tags' => ['Docker', 'DevOps', 'Containers'],
-                'thumbnail' => 'https://via.placeholder.com/350x150?text=Docker+Course'
-            ],
-            [
-                'id' => 4,
-                'title' => 'Python for Data Science',
-                'uploader' => 'DataScientist',
-                'price' => 35,
-                'tags' => ['Python', 'Data Science', 'Machine Learning'],
-                'thumbnail' => 'https://via.placeholder.com/350x150?text=Python+Course'
-            ],
-            [
-                'id' => 5,
-                'title' => 'Advanced CSS Techniques',
-                'uploader' => 'DesignWizard',
-                'price' => 15,
-                'tags' => ['CSS', 'Web Design', 'Frontend'],
-                'thumbnail' => 'https://via.placeholder.com/350x150?text=CSS+Course'
-            ],
-            [
-                'id' => 6,
-                'title' => 'Introduction to Kubernetes',
-                'uploader' => 'CloudNative',
-                'price' => 40,
-                'tags' => ['Kubernetes', 'DevOps', 'Cloud'],
-                'thumbnail' => 'https://via.placeholder.com/350x150?text=Kubernetes+Course'
-            ],
+        $videos = [];
+        $sampleTitles = [
+            'Laravel for Beginners', 'Vue.js Crash Course', 'Understanding Docker', 'Python for Data Science',
+            'Advanced CSS Techniques', 'Introduction to Kubernetes', 'Mastering Microservices', 'Building REST APIs with Node.js',
+            'Data Analysis with Pandas', 'Machine Learning A-Z', 'Cybersecurity Fundamentals', 'Ethical Hacking Explained',
+            'Game Development with Unity', 'Unreal Engine 5 Guide', 'Blender 3D Modeling', 'The Art of Photography',
+            'Digital Painting Masterclass', 'Music Production in Ableton', 'Financial Markets Overview', 'Stock Trading Strategies',
+            'Content Creation Bootcamp', 'YouTube Success Blueprint', 'Effective Communication Skills', 'Project Management Professional (PMP) Prep'
         ];
+        $sampleUploaders = ['CodeMaster', 'FrontendGuru', 'DevOpsPro', 'DataScientist', 'DesignWizard', 'CloudNative', 'ApiArchitect', 'MLExpert'];
+        $sampleTags = [['PHP', 'Laravel'], ['JS', 'Vue'], ['Docker', 'DevOps'], ['Python', 'Data'], ['CSS', 'Design'], ['K8s', 'Cloud'], ['Java', 'Spring'], ['Node.js', 'API']];
+
+        for ($i = 1; $i <= 24; $i++) {
+            $videos[] = [
+                'id' => $i,
+                'title' => $sampleTitles[$i - 1],
+                'uploader' => $sampleUploaders[array_rand($sampleUploaders)],
+                'price' => rand(10, 99),
+                'tags' => $sampleTags[array_rand($sampleTags)],
+                'thumbnail' => "https://via.placeholder.com/350x200?text=Video+{$i}:+" . urlencode(substr($sampleTitles[$i-1], 0, 20))
+            ];
+        }
 
         return view('home', ['videos' => $videos]);
     }
