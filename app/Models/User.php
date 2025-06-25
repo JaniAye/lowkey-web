@@ -23,6 +23,7 @@ class User extends Authenticatable
         'password',
         'social_id',
         'social_type',
+        'interest_tags',
     ];
 
     /**
@@ -45,6 +46,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'interest_tags' => 'array',
         ];
     }
 }
