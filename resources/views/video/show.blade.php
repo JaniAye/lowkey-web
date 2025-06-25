@@ -39,27 +39,30 @@
 
         <!-- Right Column: Video Player and Purchase Info -->
         <div class="col-lg-8 video-main-content order-lg-2">
-            <div id="video-player-section" class="position-relative"> {{-- position-relative for overlay --}}
+            <div id="video-player-section" class="position-relative">
                 {{-- This content will be dynamically updated by JavaScript --}}
             </div>
+        </div>
+    </div> <!-- End of the row for comments and video player -->
 
-            <div id="suggested-videos-section" class="mt-4"> {{-- Default to visible, JS will hide if not purchased --}}
-                <h3>Suggested Videos</h3>
-                <div class="row">
-                    @for ($i = 0; $i < 4; $i++)
-                        <div class="col-md-4 col-sm-6 mb-3"> {{-- Adjusted col-md for 3 items in a row if lg-8 width --}}
-                            <div class="card suggestion-card">
-                                <div class="suggestion-thumbnail">
-                                    <small>Thumbnail {{ $i + 1 }}</small>
-                                </div>
-                                <div class="card-body">
-                                    <h6 class="card-title">Suggested Video {{ $i + 1 }}</h6>
-                                    <p class="card-text"><small class="text-muted">Channel Name</small></p>
-                                </div>
+    <!-- Suggested Videos Section - moved outside and below the main content row -->
+    <div id="suggested-videos-section" class="mt-4 pt-4 border-top">
+        <div class="container-fluid"> {{-- Use container-fluid or container as needed for width control --}}
+            <h3>Suggested Videos</h3>
+            <div class="row">
+                @for ($i = 0; $i < 4; $i++)
+                    <div class="col-lg-3 col-md-4 col-sm-6 mb-3"> {{-- Adjusted for potentially 4 items in a full row --}}
+                        <div class="card suggestion-card">
+                            <div class="suggestion-thumbnail">
+                                <small>Thumbnail {{ $i + 1 }}</small>
+                            </div>
+                            <div class="card-body">
+                                <h6 class="card-title">Suggested Video {{ $i + 1 }}</h6>
+                                <p class="card-text"><small class="text-muted">Channel Name</small></p>
                             </div>
                         </div>
-                    @endfor
-                </div>
+                    </div>
+                @endfor
             </div>
         </div>
     </div>
@@ -384,10 +387,10 @@ document.addEventListener('DOMContentLoaded', function () {
     let hasPurchased = {{ $hasPurchasedInitially ? 'true' : 'false' }};
 
     function renderUI() {
+        // Suggested videos are now always visible, so no JS manipulation needed for its display.
         if (hasPurchased) {
             videoPlayerSection.innerHTML = videoPlayerTemplateHTML;
             // No blur, no purchase overlay. Play button is part of the template.
-            suggestedVideosSection.style.display = 'block'; // Show suggested videos
 
             // Optional: Add event listener for the play button if it's not just visual
             const playButton = videoPlayerSection.querySelector('.play-button-overlay');
@@ -402,7 +405,6 @@ document.addEventListener('DOMContentLoaded', function () {
         } else {
             videoPlayerSection.innerHTML = videoLockedTemplateHTML;
             // CSS handles blur and overlay visibility based on classes in the template
-            suggestedVideosSection.style.display = 'none'; // Hide suggested videos
             attachPayButtonListener();
         }
     }
