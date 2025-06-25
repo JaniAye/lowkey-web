@@ -71,15 +71,15 @@
 {{-- Initial state templates to be used by JavaScript --}}
 <template id="video-locked-template">
     <div class="video-player-locked-state">
-        <div class="video-player-background blurred">
-            {{-- This will be the actual player structure, but blurred --}}
-            <div class="dummy-player-content" style="background-image: url('https://via.placeholder.com/800x450/000000/FFFFFF?text=Video+Content+Preview');">
-                 {{-- Using a background image for the dummy player for blur effect --}}
+        <div class="video-player-background blurred"> {{-- Blur class might be adjusted/removed later --}}
+            <div class="dummy-player-content" style="background-image: url('https://placehold.co/800x450/2d2d2d/e0e0e0?text=Video+Thumbnail'); position: relative;">
+                {{-- Adding a fake play icon in the center to make it look more like a player --}}
+                <div class="fake-play-icon-static">▶</div>
             </div>
         </div>
         <div class="purchase-overlay">
             <div class="overlay-content text-center">
-                <div class="icon-lock mb-2" style="font-size: 2.5rem;">🔑</div> {{-- Changed icon slightly --}}
+                <div class="icon-lock mb-2" style="font-size: 2.5rem;">🔑</div>
                 <h3>Unlock Video</h3>
                 <p>Watch this video for only <strong class="video-price">{{ $videoPrice }}</strong></p>
                 <button id="pay-to-watch-btn" class="btn btn-warning btn-lg">Pay {{ $videoPrice }} to Watch</button>
@@ -90,14 +90,9 @@
 
 <template id="video-player-template">
     <div class="video-player-unlocked-state">
-        <div class="video-player-background"> {{-- Not blurred --}}
-            <div class="dummy-player-content" style="background-image: url('https://via.placeholder.com/800x450/000000/FFFFFF?text=Video+Playing');">
-                {{-- In a real scenario, an <video> tag or iframe would go here --}}
-                <div class="play-button-overlay">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" fill="currentColor" class="bi bi-play-circle-fill" viewBox="0 0 16 16">
-                        <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM6.79 5.093A.5.5 0 0 0 6 5.5v5a.5.5 0 0 0 .79.407l3.5-2.5a.5.5 0 0 0 0-.814l-3.5-2.5z"/>
-                    </svg>
-                </div>
+        <div class="video-player-background">
+            <div class="dummy-player-content" style="background-image: url('https://placehold.co/800x450/1a1a1a/e0e0e0?text=Video+Playing...'); position: relative;">
+                {{-- The new smaller play button will be dynamically added here by JS --}}
             </div>
         </div>
     </div>
@@ -135,21 +130,23 @@
         height: 100%;
         min-height: 450px; /* Match parent section */
     }
-    .video-player-background {
+    .video-player-background { /* This class is on the container of dummy-player-content */
         position: absolute;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        background-size: cover;
-        background-position: center;
+        background-size: cover; /* Should not be needed here if dummy-player-content has the bg image */
+        background-position: center; /* Same as above */
         border-radius: 12px; /* Match parent container's rounding */
+        /* If we want a border around the whole player area, it could go here or on #video-player-section */
     }
-    .video-player-background.blurred .dummy-player-content {
-        filter: blur(8px); /* Adjust blur intensity as needed */
-        transform: scale(1.05); /* Slight scale to prevent blurred edges from showing background */
-    }
-    .dummy-player-content {
+    /* Removing the .blurred class and its effects for now to make the player more identifiable */
+    /* .video-player-background.blurred .dummy-player-content {
+        filter: blur(8px);
+        transform: scale(1.05);
+    } */
+    .dummy-player-content { /* This is the div with the background image */
         width: 100%;
         height: 100%;
         min-height: 450px; /* Ensure it fills the space */
@@ -372,6 +369,29 @@
         }
     }
 
+    .dynamic-play-button {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: rgba(0, 0, 0, 0.6);
+        color: white;
+        border: 2px solid white;
+        border-radius: 50%; /* Circular button */
+        width: 60px;
+        height: 60px;
+        font-size: 24px; /* Size of the '▶' icon */
+        line-height: 56px; /* Vertically center icon text, account for border */
+        text-align: center; /* Horizontally center icon text */
+        cursor: pointer;
+        transition: background-color 0.2s ease, transform 0.2s ease;
+        z-index: 5; /* Ensure it's above the dummy-player-content background image */
+    }
+    .dynamic-play-button:hover {
+        background-color: rgba(0, 0, 0, 0.8);
+        transform: translate(-50%, -50%) scale(1.1);
+    }
+
 </style>
 @endpush
 
@@ -390,16 +410,21 @@ document.addEventListener('DOMContentLoaded', function () {
         // Suggested videos are now always visible, so no JS manipulation needed for its display.
         if (hasPurchased) {
             videoPlayerSection.innerHTML = videoPlayerTemplateHTML;
-            // No blur, no purchase overlay. Play button is part of the template.
 
-            // Optional: Add event listener for the play button if it's not just visual
-            const playButton = videoPlayerSection.querySelector('.play-button-overlay');
-            if(playButton) {
-                playButton.addEventListener('click', function() {
+            // Dynamically create and add the new smaller play button
+            const dummyPlayerContent = videoPlayerSection.querySelector('.dummy-player-content');
+            if (dummyPlayerContent) {
+                const newPlayButton = document.createElement('div');
+                newPlayButton.className = 'dynamic-play-button';
+                newPlayButton.innerHTML = '▶'; // Play icon character
+
+                newPlayButton.addEventListener('click', function() {
                     alert('Video playback would start now!');
-                    // Potentially hide the play button itself or change its state
-                    playButton.style.display = 'none';
+                    newPlayButton.style.display = 'none'; // Hide the button after click
+                    // Here you might also trigger actual video play if it were a real player
                 });
+
+                dummyPlayerContent.appendChild(newPlayButton);
             }
 
         } else {
