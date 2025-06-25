@@ -11,19 +11,45 @@
 
 <div class="container-fluid video-page-container">
     <div class="row">
-        <!-- Left Column: Video Player and Purchase Info -->
-        <div class="col-lg-8 video-main-content">
-            <div id="video-player-section">
+        <!-- Left Column: Comments Section -->
+        <div class="col-lg-4 video-sidebar order-lg-1">
+            <div class="comments-section card">
+                <div class="card-header">
+                    <h4>Comments</h4>
+                </div>
+                <div class="card-body" style="max-height: 600px; overflow-y: auto;"> {{-- Increased max-height slightly --}}
+                    @for ($i = 0; $i < 7; $i++) {{-- Increased comment count for testing scroll --}}
+                        <div class="comment mb-3 pb-2 border-bottom">
+                            <div class="d-flex align-items-start">
+                                <img src="https://via.placeholder.com/40?text=U{{$i+1}}" class="rounded-circle me-2" alt="User Avatar">
+                                <div>
+                                    <strong>User {{ $i + 1 }}</strong> <small class="text-muted ms-2">{{ $i*2 + 1 }} hours ago</small>
+                                    <p class="mt-1 mb-0">This is a fake comment. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                                </div>
+                            </div>
+                        </div>
+                    @endfor
+                    <div class="mt-3">
+                        <textarea class="form-control" rows="2" placeholder="Add a comment..."></textarea>
+                        <button class="btn btn-primary btn-sm mt-2">Post Comment</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Video Player and Purchase Info -->
+        <div class="col-lg-8 video-main-content order-lg-2">
+            <div id="video-player-section" class="position-relative"> {{-- position-relative for overlay --}}
                 {{-- This content will be dynamically updated by JavaScript --}}
             </div>
 
-            <div id="suggested-videos-section" class="mt-4" style="display: none;">
+            <div id="suggested-videos-section" class="mt-4"> {{-- Default to visible, JS will hide if not purchased --}}
                 <h3>Suggested Videos</h3>
                 <div class="row">
                     @for ($i = 0; $i < 4; $i++)
-                        <div class="col-md-3 col-sm-6 mb-3">
+                        <div class="col-md-4 col-sm-6 mb-3"> {{-- Adjusted col-md for 3 items in a row if lg-8 width --}}
                             <div class="card suggestion-card">
-                                <div class="suggestion-thumbnail" style="height: 120px; background-color: #e0e0e0; display: flex; align-items: center; justify-content: center;">
+                                <div class="suggestion-thumbnail">
                                     <small>Thumbnail {{ $i + 1 }}</small>
                                 </div>
                                 <div class="card-body">
@@ -36,52 +62,40 @@
                 </div>
             </div>
         </div>
-
-        <!-- Right Column: Comments Section -->
-        <div class="col-lg-4 video-sidebar">
-            <div class="comments-section card">
-                <div class="card-header">
-                    <h4>Comments</h4>
-                </div>
-                <div class="card-body" style="max-height: 500px; overflow-y: auto;">
-                    @for ($i = 0; $i < 5; $i++)
-                        <div class="comment mb-3 pb-2 border-bottom">
-                            <div class="d-flex align-items-start">
-                                <img src="https://via.placeholder.com/40?text=User{{$i+1}}" class="rounded-circle me-2" alt="User Avatar">
-                                <div>
-                                    <strong>User {{ $i + 1 }}</strong> <small class="text-muted ms-2">{{ $i*2 + 1 }} hours ago</small>
-                                    <p class="mt-1 mb-0">This is a fake comment. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-                                </div>
-                            </div>
-                        </div>
-                    @endfor
-                    <div class="mt-3">
-                        <textarea class="form-control" rows="2" placeholder="Add a comment..."></textarea>
-                        <button class="btn btn-primary btn-sm mt-2">Post Comment</button>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 </div>
 
 {{-- Initial state templates to be used by JavaScript --}}
 <template id="video-locked-template">
-    <div class="video-placeholder-locked"> {{-- Removed card and text-center as styles are now more specific --}}
-        <div class="icon-lock">🔒</div>
-        <h3>Video Locked</h3>
-        <p>You need to purchase this video to watch it.</p>
-        <div class="video-price mb-3">{{ $videoPrice }}</div> {{-- Changed h4 to div for more flexible styling --}}
-        <button id="pay-to-watch-btn" class="btn btn-primary btn-lg">Pay to Watch</button> {{-- Adjusted button class for new styles --}}
+    <div class="video-player-locked-state">
+        <div class="video-player-background blurred">
+            {{-- This will be the actual player structure, but blurred --}}
+            <div class="dummy-player-content" style="background-image: url('https://via.placeholder.com/800x450/000000/FFFFFF?text=Video+Content+Preview');">
+                 {{-- Using a background image for the dummy player for blur effect --}}
+            </div>
+        </div>
+        <div class="purchase-overlay">
+            <div class="overlay-content text-center">
+                <div class="icon-lock mb-2" style="font-size: 2.5rem;">🔑</div> {{-- Changed icon slightly --}}
+                <h3>Unlock Video</h3>
+                <p>Watch this video for only <strong class="video-price">{{ $videoPrice }}</strong></p>
+                <button id="pay-to-watch-btn" class="btn btn-warning btn-lg">Pay {{ $videoPrice }} to Watch</button>
+            </div>
+        </div>
     </div>
 </template>
 
 <template id="video-player-template">
-    <div class="video-player-wrapper">
-        {{-- Dummy video player --}}
-        <div class="dummy-player"> {{-- Added class for specific styling --}}
-            <h2>Dummy Video Player</h2>
-            <p>(Video content would be here)</p>
+    <div class="video-player-unlocked-state">
+        <div class="video-player-background"> {{-- Not blurred --}}
+            <div class="dummy-player-content" style="background-image: url('https://via.placeholder.com/800x450/000000/FFFFFF?text=Video+Playing');">
+                {{-- In a real scenario, an <video> tag or iframe would go here --}}
+                <div class="play-button-overlay">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" fill="currentColor" class="bi bi-play-circle-fill" viewBox="0 0 16 16">
+                        <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM6.79 5.093A.5.5 0 0 0 6 5.5v5a.5.5 0 0 0 .79.407l3.5-2.5a.5.5 0 0 0 0-.814l-3.5-2.5z"/>
+                    </svg>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -98,62 +112,131 @@
         margin-bottom: 30px;
     }
 
-    /* Video Player and Purchase Info Area */
+    /* Video Player Area (Right Column) */
     .video-main-content {
-        padding-right: 25px; /* Space between video and comments */
-    }
-    .video-placeholder-locked {
-        background-color: #fff;
-        padding: 40px 20px;
-        border-radius: 12px;
-        border: 1px solid #e0e0e0;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-        text-align: center;
-    }
-    .video-placeholder-locked .icon-lock {
-        font-size: 3.5rem;
-        color: #6c757d; /* Bootstrap's secondary color */
-        margin-bottom: 15px;
-    }
-    .video-placeholder-locked h3 {
-        color: #343a40; /* Bootstrap's dark color */
-        font-weight: 600;
-    }
-    .video-placeholder-locked .video-price {
-        color: #28a745; /* Bootstrap's success color */
-        font-size: 1.75rem;
-        font-weight: 700;
-        margin: 10px 0 20px;
-    }
-    #pay-to-watch-btn {
-        background-color: #007bff; /* Bootstrap's primary blue */
-        border-color: #007bff;
-        padding: 12px 30px;
-        font-size: 1.1rem;
-        font-weight: 500;
-        transition: background-color 0.2s ease-in-out;
-    }
-    #pay-to-watch-btn:hover {
-        background-color: #0056b3;
+        /* padding-right: 25px; */ /* Original: space between video and comments */
+        /* Now video is on right, comments on left, Bootstrap handles gutter */
     }
 
-    .video-player-wrapper .dummy-player {
-        background-color: #000;
-        color: #fff;
-        height: 480px; /* Adjusted height */
+    #video-player-section {
+        min-height: 450px; /* Ensure it has some height before JS loads content */
+        background-color: #f0f0f0; /* Placeholder BG for the section itself */
+        border-radius: 12px;
+        overflow: hidden; /* Important for containing blurred elements */
+    }
+
+    /* Locked State Styling */
+    .video-player-locked-state {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        min-height: 450px; /* Match parent section */
+    }
+    .video-player-background {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-size: cover;
+        background-position: center;
+        border-radius: 12px; /* Match parent container's rounding */
+    }
+    .video-player-background.blurred .dummy-player-content {
+        filter: blur(8px); /* Adjust blur intensity as needed */
+        transform: scale(1.05); /* Slight scale to prevent blurred edges from showing background */
+    }
+    .dummy-player-content {
+        width: 100%;
+        height: 100%;
+        min-height: 450px; /* Ensure it fills the space */
+        background-size: cover;
+        background-position: center;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        border-radius: 12px; /* Softer corners */
-        box-shadow: 0 8px 15px rgba(0,0,0,0.1);
-    }
-    .video-player-wrapper .dummy-player h2 {
-        margin-bottom: 10px;
-        font-size: 1.8rem;
+        color: white; /* For any text inside, if needed */
+        transition: filter 0.3s ease-in-out; /* Smooth transition for blur removal */
     }
 
-    /* Comments Section */
+    .purchase-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.6); /* Dark semi-transparent overlay */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10;
+        border-radius: 12px; /* Match parent container's rounding */
+    }
+    .purchase-overlay .overlay-content {
+        background-color: rgba(255, 255, 255, 0.95); /* Slightly transparent white card */
+        padding: 30px 40px;
+        border-radius: 10px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        color: #333;
+    }
+    .purchase-overlay .icon-lock {
+        color: #ffc107; /* Bootstrap warning yellow */
+    }
+    .purchase-overlay h3 {
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+    .purchase-overlay .video-price {
+        color: #28a745; /* Bootstrap's success color */
+        font-size: 1.2rem;
+        font-weight: 700;
+    }
+    #pay-to-watch-btn { /* Specific ID for the pay button */
+        background-color: #ffc107; /* Bootstrap warning yellow */
+        border-color: #ffc107;
+        color: #212529; /* Dark text for yellow button */
+        padding: 10px 25px;
+        font-size: 1.1rem;
+        font-weight: bold;
+        margin-top: 15px;
+        transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+    }
+    #pay-to-watch-btn:hover {
+        background-color: #e0a800;
+        border-color: #d39e00;
+    }
+
+    /* Unlocked State Styling */
+    .video-player-unlocked-state {
+        position: relative; /* For play button overlay */
+        width: 100%;
+        height: 100%;
+        min-height: 450px; /* Match parent section */
+    }
+    .video-player-unlocked-state .play-button-overlay {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: rgba(255, 255, 255, 0.8); /* Semi-transparent white */
+        cursor: pointer;
+        z-index: 5; /* Below purchase overlay if it were there, but above video content */
+        transition: color 0.2s ease-in-out, transform 0.2s ease-in-out;
+    }
+    .video-player-unlocked-state .play-button-overlay:hover {
+        color: rgba(255, 255, 255, 1); /* Fully opaque white */
+        transform: translate(-50%, -50%) scale(1.1);
+    }
+    .video-player-unlocked-state .play-button-overlay svg {
+        filter: drop-shadow(0 0 5px rgba(0,0,0,0.5)); /* Add a subtle shadow to the play icon */
+    }
+
+
+    /* Comments Section (Left Column) */
+    .video-sidebar {
+        padding-right: 20px; /* Add some space to its right, before video player column */
+    }
     .video-sidebar .comments-section.card {
         border-radius: 12px;
         border: 1px solid #e0e0e0;
@@ -294,18 +377,32 @@
 document.addEventListener('DOMContentLoaded', function () {
     const videoPlayerSection = document.getElementById('video-player-section');
     const suggestedVideosSection = document.getElementById('suggested-videos-section');
-    const videoLockedTemplate = document.getElementById('video-locked-template').innerHTML;
-    const videoPlayerTemplate = document.getElementById('video-player-template').innerHTML;
+    const videoLockedTemplateHTML = document.getElementById('video-locked-template').innerHTML;
+    const videoPlayerTemplateHTML = document.getElementById('video-player-template').innerHTML;
+    const videoPrice = "{{ $videoPrice }}"; // Get video price from PHP
 
-    let hasPurchased = {{ $hasPurchasedInitially ? 'true' : 'false' }}; // Default state
+    let hasPurchased = {{ $hasPurchasedInitially ? 'true' : 'false' }};
 
     function renderUI() {
         if (hasPurchased) {
-            videoPlayerSection.innerHTML = videoPlayerTemplate;
-            suggestedVideosSection.style.display = 'block';
+            videoPlayerSection.innerHTML = videoPlayerTemplateHTML;
+            // No blur, no purchase overlay. Play button is part of the template.
+            suggestedVideosSection.style.display = 'block'; // Show suggested videos
+
+            // Optional: Add event listener for the play button if it's not just visual
+            const playButton = videoPlayerSection.querySelector('.play-button-overlay');
+            if(playButton) {
+                playButton.addEventListener('click', function() {
+                    alert('Video playback would start now!');
+                    // Potentially hide the play button itself or change its state
+                    playButton.style.display = 'none';
+                });
+            }
+
         } else {
-            videoPlayerSection.innerHTML = videoLockedTemplate;
-            suggestedVideosSection.style.display = 'none';
+            videoPlayerSection.innerHTML = videoLockedTemplateHTML;
+            // CSS handles blur and overlay visibility based on classes in the template
+            suggestedVideosSection.style.display = 'none'; // Hide suggested videos
             attachPayButtonListener();
         }
     }
@@ -314,10 +411,11 @@ document.addEventListener('DOMContentLoaded', function () {
         const payButton = document.getElementById('pay-to-watch-btn');
         if (payButton) {
             payButton.addEventListener('click', function() {
-                if (confirm("This amount will reduce in your wallet. Confirm to proceed?")) {
-                    alert("Payment successful! Video unlocked."); // Simulating success
+                // Updated confirmation message
+                if (confirm(videoPrice + " will be deducted from your wallet. Pay Now?")) {
+                    // No immediate alert, success is implied by UI change
                     hasPurchased = true;
-                    renderUI(); // Re-render the UI to show the video player and suggestions
+                    renderUI(); // Re-render UI for unlocked state
                 } else {
                     alert("Payment cancelled.");
                 }
@@ -328,12 +426,11 @@ document.addEventListener('DOMContentLoaded', function () {
     // Initial render
     renderUI();
 
-    // Expose a way to test the "already purchased" state if needed for development
-    // e.g., type in console: testSetPurchased(true)
+    // Expose a way to test states
     window.testSetPurchased = function(status) {
         hasPurchased = status;
         renderUI();
-    }
+    };
 });
 </script>
 @endpush
