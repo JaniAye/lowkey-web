@@ -90,10 +90,8 @@
 
 <template id="video-player-template">
     <div class="video-player-unlocked-state">
-        <div class="video-player-background">
-            <div class="dummy-player-content" style="background-image: url('https://placehold.co/800x450/1a1a1a/e0e0e0?text=Video+Playing...'); position: relative;">
-                {{-- The new smaller play button will be dynamically added here by JS --}}
-            </div>
+        <div class="video-player-background" style="position: relative; padding-bottom: 56.25%; /* 16:9 aspect ratio */ height: 0; overflow: hidden;">
+            <iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         </div>
     </div>
 </template>
@@ -411,21 +409,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (hasPurchased) {
             videoPlayerSection.innerHTML = videoPlayerTemplateHTML;
 
-            // Dynamically create and add the new smaller play button
-            const dummyPlayerContent = videoPlayerSection.querySelector('.dummy-player-content');
-            if (dummyPlayerContent) {
-                const newPlayButton = document.createElement('div');
-                newPlayButton.className = 'dynamic-play-button';
-                newPlayButton.innerHTML = '▶'; // Play icon character
-
-                newPlayButton.addEventListener('click', function() {
-                    alert('Video playback would start now!');
-                    newPlayButton.style.display = 'none'; // Hide the button after click
-                    // Here you might also trigger actual video play if it were a real player
-                });
-
-                dummyPlayerContent.appendChild(newPlayButton);
-            }
+            // No need to dynamically create a play button, the YouTube iframe has its own controls.
 
         } else {
             videoPlayerSection.innerHTML = videoLockedTemplateHTML;
