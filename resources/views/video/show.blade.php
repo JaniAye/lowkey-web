@@ -7,25 +7,518 @@
     // Let's assume it's false by default for a user who hasn't paid.
     $hasPurchasedInitially = false;
     $videoPrice = '$10.00'; // Example price
+    // Sample data for video details (in a real app, this would come from the controller)
+    $videoTitle = "Amazing Video Title - Episode " . $videoId;
+    $videoUploader = "ContentCreator123";
+    $videoViews = rand(10000, 5000000);
+    $videoUploadDate = now()->subDays(rand(1, 365))->toFormattedDateString();
+    $videoDescription = "This is a sample description for the video. It can be a bit longer and provide more details about the content. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.";
 @endphp
 
-<div class="container-fluid video-page-container">
-    <div class="row">
-        <!-- Left Column: Comments Section -->
-        <div class="col-lg-4 video-sidebar order-lg-1">
-            <div class="comments-section card">
-                <div class="card-header">
-                    <h4>Comments</h4>
+<div class="container-fluid video-page-container-yt"> {{-- Added -yt suffix for new styles --}}
+    <div class="row gx-4"> {{-- gx-4 for gutter spacing --}}
+        <!-- Main Video Content Column -->
+        <div class="col-lg-8 video-main-content-yt">
+            <div id="video-player-section-yt" class="mb-3">
+                {{-- This content will be dynamically updated by JavaScript --}}
+            </div>
+            <div class="video-info-yt">
+                <h1 class="video-title-yt">{{ $videoTitle }}</h1>
+                <div class="video-meta-yt d-flex justify-content-between align-items-center">
+                    <div>
+                        <span class="view-count-yt">{{ number_format($videoViews) }} views</span>
+                        <span class="upload-date-yt"> • {{ $videoUploadDate }}</span>
+                    </div>
+                    <div class="video-actions-yt">
+                        <button class="btn btn-sm btn-outline-secondary me-2"><i class="bi bi-hand-thumbs-up"></i> {{ number_format(rand(100,10000)) }}</button>
+                        <button class="btn btn-sm btn-outline-secondary me-2"><i class="bi bi-hand-thumbs-down"></i> {{ number_format(rand(10,500)) }}</button>
+                        <button class="btn btn-sm btn-outline-secondary me-2"><i class="bi bi-share"></i> Share</button>
+                        <button class="btn btn-sm btn-outline-secondary"><i class="bi bi-download"></i> Download</button>
+                    </div>
                 </div>
-                <div class="card-body" style="max-height: 600px; overflow-y: auto;"> {{-- Increased max-height slightly --}}
-                    @for ($i = 0; $i < 7; $i++) {{-- Increased comment count for testing scroll --}}
-                        <div class="comment mb-3 pb-2 border-bottom">
+                <hr>
+                <div class="uploader-info-yt d-flex align-items-center mb-3">
+                    <img src="https://via.placeholder.com/48?text=U" class="rounded-circle me-3" alt="Uploader Avatar">
+                    <div>
+                        <h5 class="uploader-name-yt mb-0">{{ $videoUploader }}</h5>
+                        <small class="subscriber-count-yt">{{ number_format(rand(500, 100000)) }} subscribers</small>
+                    </div>
+                    <button class="btn btn-danger ms-auto">Subscribe</button>
+                </div>
+                <div class="video-description-yt bg-light p-3 rounded">
+                    <p>{{ $videoDescription }}</p>
+                </div>
+            </div>
+             <!-- Comments Section (Moved under video info in the left column) -->
+            <div class="comments-section-yt card mt-4">
+                <div class="card-header">
+                    <h4>{{ number_format(rand(50,1000)) }} Comments</h4>
+                </div>
+                <div class="card-body">
+                    <div class="add-comment-yt mb-3">
+                        <img src="https://via.placeholder.com/40?text=Me" class="rounded-circle me-2" alt="My Avatar">
+                        <input type="text" class="form-control form-control-sm" placeholder="Add a comment...">
+                        {{-- <button class="btn btn-primary btn-sm mt-2">Post Comment</button> --}}
+                    </div>
+                    @for ($i = 0; $i < 7; $i++)
+                        <div class="comment-yt mb-3 pb-2 border-bottom">
                             <div class="d-flex align-items-start">
                                 <img src="https://via.placeholder.com/40?text=U{{$i+1}}" class="rounded-circle me-2" alt="User Avatar">
                                 <div>
                                     <strong>User {{ $i + 1 }}</strong> <small class="text-muted ms-2">{{ $i*2 + 1 }} hours ago</small>
-                                    <p class="mt-1 mb-0">This is a fake comment. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                                    <p class="mt-1 mb-0">This is a fake YouTube style comment. Much more engaging! Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                                    <div class="comment-actions-yt">
+                                        <a href="#" class="me-2"><i class="bi bi-hand-thumbs-up"></i> {{ rand(0,50) }}</a>
+                                        <a href="#" class="me-2"><i class="bi bi-hand-thumbs-down"></i></a>
+                                        <a href="#">Reply</a>
+                                    </div>
                                 </div>
+                            </div>
+                        </div>
+                    @endfor
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar: Suggested Videos -->
+        <div class="col-lg-4 video-sidebar-yt">
+            <h4 class="mb-3">Up next</h4>
+            @for ($i = 0; $i < 10; $i++)
+            <a href="{{ route('videos.show', ['id' => $videoId + $i + 1]) }}" class="text-decoration-none text-dark">
+                <div class="suggested-video-yt d-flex mb-3">
+                    <div class="thumbnail-yt me-2">
+                        <img src="https://via.placeholder.com/168x94?text=Video+{{$videoId + $i + 1}}" alt="Suggested video thumbnail">
+                    </div>
+                    <div class="info-yt">
+                        <h6 class="title-yt mb-1">Suggested Video Title {{ $i + 1 }} - A very interesting topic indeed</h6>
+                        <small class="channel-yt text-muted">Another Creator</small><br>
+                        <small class="views-yt text-muted">{{ number_format(rand(1000, 200000)) }} views</small>
+                    </div>
+                </div>
+            </a>
+            @endfor
+        </div>
+    </div>
+</div>
+
+{{-- Initial state templates to be used by JavaScript --}}
+<template id="video-locked-template-yt">
+    <div class="video-player-locked-state-yt">
+        <div class="video-player-background-yt" style="background-image: url('https://placehold.co/800x450/2d2d2d/e0e0e0?text=Video+{{$videoId}}+Thumbnail');">
+            {{-- Static play icon for locked state --}}
+            <div class="fake-play-icon-static-yt">
+                <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" fill="currentColor" class="bi bi-play-circle-fill" viewBox="0 0 16 16">
+                    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M6.79 5.093A.5.5 0 0 0 6 5.5v5a.5.5 0 0 0 .79.407l3.5-2.5a.5.5 0 0 0 0-.814z"/>
+                </svg>
+            </div>
+        </div>
+        <div class="purchase-overlay-yt">
+            <div class="overlay-content-yt text-center">
+                <div class="icon-lock-yt mb-2" style="font-size: 2.5rem;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="bi bi-lock-fill" viewBox="0 0 16 16">
+                        <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2m3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2"/>
+                    </svg>
+                </div>
+                <h3>Unlock Video</h3>
+                <p>Watch this video for only <strong class="video-price-yt">{{ $videoPrice }}</strong></p>
+                <button id="pay-to-watch-btn-yt" class="btn btn-danger btn-lg">Pay {{ $videoPrice }} to Watch</button>
+            </div>
+        </div>
+    </div>
+</template>
+
+<template id="video-player-template-yt">
+    <div class="video-player-unlocked-state-yt">
+        {{-- Actual video player (e.g., <video> tag or iframe) would go here --}}
+        {{-- For this example, using a placeholder with a dynamic play button --}}
+        <div class="dummy-player-content-yt" style="background-image: url('https://placehold.co/800x450/1a1a1a/e0e0e0?text=Video+{{$videoId}}+Playing...');">
+            {{-- Dynamic play button will be added here by JS --}}
+        </div>
+    </div>
+</template>
+
+@endsection
+
+@push('styles')
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+<style>
+    body {
+        background-color: #f9f9f9; /* YouTube's light mode background */
+        color: #0f0f0f; /* YouTube's primary text color */
+    }
+    .video-page-container-yt {
+        margin-top: 20px;
+        margin-bottom: 30px;
+        max-width: 1700px; /* Max width like YouTube */
+    }
+
+    /* Main Video Content Area */
+    #video-player-section-yt {
+        aspect-ratio: 16 / 9; /* Maintain 16:9 aspect ratio */
+        background-color: #000000; /* Black background for player area */
+        border-radius: 12px; /* Rounded corners for player */
+        overflow: hidden;
+        position: relative; /* For absolute positioning of overlays/play buttons */
+    }
+
+    /* Locked State Styling */
+    .video-player-locked-state-yt {
+        width: 100%;
+        height: 100%;
+        position: relative;
+    }
+    .video-player-background-yt {
+        width: 100%;
+        height: 100%;
+        background-size: cover;
+        background-position: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .fake-play-icon-static-yt svg {
+        color: rgba(255, 255, 255, 0.7);
+        filter: drop-shadow(0 0 8px rgba(0,0,0,0.5));
+    }
+    .purchase-overlay-yt {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.75);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10;
+        color: #fff;
+    }
+    .purchase-overlay-yt .overlay-content-yt {
+        background-color: rgba(30, 30, 30, 0.9); /* Darker, slightly transparent card */
+        padding: 30px 40px;
+        border-radius: 10px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+    }
+    .purchase-overlay-yt .icon-lock-yt svg {
+        color: #ffcc00; /* A gold-ish yellow */
+    }
+    .purchase-overlay-yt h3 {
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+    .purchase-overlay-yt .video-price-yt {
+        color: #ffcc00;
+        font-size: 1.2rem;
+        font-weight: 700;
+    }
+    #pay-to-watch-btn-yt {
+        background-color: #ff0000; /* YouTube Red */
+        border-color: #ff0000;
+        color: #fff;
+        padding: 10px 25px;
+        font-size: 1.1rem;
+        font-weight: bold;
+        margin-top: 15px;
+        transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+    }
+    #pay-to-watch-btn-yt:hover {
+        background-color: #cc0000;
+        border-color: #cc0000;
+    }
+
+    /* Unlocked State Styling */
+    .video-player-unlocked-state-yt {
+        width: 100%;
+        height: 100%;
+    }
+    .dummy-player-content-yt { /* This is the div with the background image for the player */
+        width: 100%;
+        height: 100%;
+        background-size: cover;
+        background-position: center;
+        position: relative; /* For dynamic play button */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .dynamic-play-button-yt {
+        background-color: rgba(0, 0, 0, 0.6);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 70px;
+        height: 70px;
+        cursor: pointer;
+        transition: background-color 0.2s ease, transform 0.2s ease;
+        z-index: 5;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .dynamic-play-button-yt svg {
+        width: 36px; /* Size of the play icon itself */
+        height: 36px;
+    }
+    .dynamic-play-button-yt:hover {
+        background-color: rgba(0, 0, 0, 0.8);
+        transform: scale(1.1);
+    }
+
+    /* Video Info Below Player */
+    .video-info-yt .video-title-yt {
+        font-size: 1.4rem; /* YouTube title size is around 20px */
+        font-weight: 600;
+        margin-top: 12px;
+        margin-bottom: 8px;
+        line-height: 1.3;
+    }
+    .video-info-yt .video-meta-yt {
+        font-size: 0.9rem;
+        color: #606060; /* YouTube secondary text color */
+        margin-bottom: 10px;
+    }
+    .video-info-yt .video-actions-yt .btn {
+        font-size: 0.85rem;
+        padding: .3rem .7rem;
+    }
+    .video-info-yt .video-actions-yt .btn i {
+        font-size: 1.1rem; /* Slightly larger icons */
+        vertical-align: middle;
+    }
+
+    .uploader-info-yt img {
+        width: 48px;
+        height: 48px;
+    }
+    .uploader-info-yt .uploader-name-yt {
+        font-size: 1rem;
+        font-weight: 500;
+    }
+    .uploader-info-yt .subscriber-count-yt {
+        font-size: 0.8rem;
+        color: #606060;
+    }
+    .uploader-info-yt .btn-danger {
+        background-color: #c00;
+        border: none;
+        font-size: 0.9rem;
+        font-weight: 500;
+        padding: .4rem 1rem;
+    }
+
+    .video-description-yt {
+        font-size: 0.9rem;
+        color: #0f0f0f;
+        background-color: rgba(0,0,0,0.05) !important; /* YouTube's light gray for description box */
+        border-radius: 8px;
+        margin-top: 16px;
+        line-height: 1.5;
+    }
+    .video-description-yt p {
+        margin-bottom: 0.5rem;
+    }
+
+
+    /* Comments Section */
+    .comments-section-yt.card {
+        background-color: transparent; /* Make card background transparent */
+        border: none; /* Remove card border */
+    }
+    .comments-section-yt .card-header {
+        background-color: transparent;
+        border-bottom: 1px solid #e0e0e0;
+        padding-left: 0;
+        padding-right: 0;
+        font-size: 1.1rem;
+        font-weight: 500;
+    }
+    .comments-section-yt .card-body {
+        padding: 20px 0; /* Remove side padding */
+    }
+    .add-comment-yt {
+        display: flex;
+        align-items: center;
+    }
+    .add-comment-yt img {
+        width: 40px;
+        height: 40px;
+    }
+    .add-comment-yt .form-control {
+        border: none;
+        border-bottom: 1px solid #ccc;
+        border-radius: 0;
+        padding-left: 0;
+        box-shadow: none;
+    }
+     .add-comment-yt .form-control:focus {
+        border-bottom: 2px solid #0f0f0f;
+     }
+
+    .comment-yt {
+        padding-bottom: 15px;
+        margin-bottom: 15px;
+        border-bottom: 1px solid #e9e9e9;
+    }
+    .comment-yt:last-child {
+        border-bottom: none;
+    }
+    .comment-yt img {
+        width: 40px;
+        height: 40px;
+    }
+    .comment-yt strong {
+        font-size: 0.85rem;
+        font-weight: 500;
+    }
+    .comment-yt p {
+        font-size: 0.9rem;
+        line-height: 1.4;
+        color: #0f0f0f;
+    }
+    .comment-actions-yt a {
+        font-size: 0.8rem;
+        color: #606060;
+        text-decoration: none;
+    }
+    .comment-actions-yt a:hover {
+        color: #0f0f0f;
+    }
+    .comment-actions-yt i {
+        font-size: 0.9rem;
+    }
+
+
+    /* Sidebar: Suggested Videos */
+    .video-sidebar-yt h4 {
+        font-size: 1rem;
+        font-weight: 500;
+    }
+    .suggested-video-yt .thumbnail-yt img {
+        width: 168px; /* Standard YouTube suggested video thumbnail width */
+        height: 94px; /* Standard YouTube suggested video thumbnail height */
+        border-radius: 8px;
+        object-fit: cover;
+    }
+    .suggested-video-yt .info-yt .title-yt {
+        font-size: 0.9rem;
+        font-weight: 500;
+        color: #0f0f0f;
+        line-height: 1.3;
+        max-height: 2.6em; /* Limit to 2 lines */
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+    }
+    .suggested-video-yt .info-yt .channel-yt,
+    .suggested-video-yt .info-yt .views-yt {
+        font-size: 0.8rem;
+        color: #606060;
+    }
+    .suggested-video-yt:hover .info-yt .title-yt {
+        color: #cc0000; /* Or keep it black if preferred */
+    }
+
+
+    /* Responsive adjustments */
+    @media (max-width: 991.98px) { /* lg breakpoint */
+        .video-sidebar-yt {
+            margin-top: 30px;
+        }
+        .video-info-yt .video-title-yt {
+            font-size: 1.25rem;
+        }
+    }
+    @media (max-width: 767.98px) { /* md breakpoint */
+        .video-info-yt .video-meta-yt {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .video-info-yt .video-actions-yt {
+            margin-top: 10px;
+        }
+         .uploader-info-yt {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .uploader-info-yt .btn-danger {
+            margin-left: 0 !important;
+            margin-top: 10px;
+        }
+    }
+
+</style>
+@endpush
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const videoPlayerSection = document.getElementById('video-player-section-yt');
+    // const suggestedVideosSection = document.getElementById('suggested-videos-section'); // Not used in this version's JS
+    const videoLockedTemplateHTML = document.getElementById('video-locked-template-yt').innerHTML;
+    const videoPlayerTemplateHTML = document.getElementById('video-player-template-yt').innerHTML;
+    const videoPrice = "{{ $videoPrice }}"; // Get video price from PHP
+
+    let hasPurchased = {{ $hasPurchasedInitially ? 'true' : 'false' }};
+
+    function renderUI() {
+        if (!videoPlayerSection) {
+            console.error('Video player section not found!');
+            return;
+        }
+
+        if (hasPurchased) {
+            videoPlayerSection.innerHTML = videoPlayerTemplateHTML;
+
+            const dummyPlayerContent = videoPlayerSection.querySelector('.dummy-player-content-yt');
+            if (dummyPlayerContent) {
+                // Check if play button already exists
+                if (!dummyPlayerContent.querySelector('.dynamic-play-button-yt')) {
+                    const newPlayButton = document.createElement('div');
+                    newPlayButton.className = 'dynamic-play-button-yt';
+                    // Bootstrap Play Icon SVG
+                    newPlayButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="currentColor" class="bi bi-play-fill" viewBox="0 0 16 16">
+                        <path d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393"/>
+                    </svg>`;
+
+                    newPlayButton.addEventListener('click', function() {
+                        alert('Video playback would start now! (Video ID: {{ $videoId }})');
+                        // Instead of hiding, you might replace dummy content with actual player
+                        dummyPlayerContent.innerHTML = '<p style="color:white; text-align:center; font-size:1.2rem;">Video is "playing"...</p>';
+                    });
+                    dummyPlayerContent.appendChild(newPlayButton);
+                }
+            }
+        } else {
+            videoPlayerSection.innerHTML = videoLockedTemplateHTML;
+            attachPayButtonListener();
+        }
+    }
+
+    function attachPayButtonListener() {
+        const payButton = document.getElementById('pay-to-watch-btn-yt');
+        if (payButton) {
+            payButton.addEventListener('click', function() {
+                if (confirm(videoPrice + " will be deducted from your wallet. Pay Now?")) {
+                    hasPurchased = true;
+                    renderUI();
+                } else {
+                    // alert("Payment cancelled."); // Optional: notify cancellation
+                }
+            });
+        }
+    }
+
+    renderUI();
+
+    window.testSetPurchased = function(status) {
+        hasPurchased = status;
+        renderUI();
+    };
+});
+</script>
+@endpush
                             </div>
                         </div>
                     @endfor
