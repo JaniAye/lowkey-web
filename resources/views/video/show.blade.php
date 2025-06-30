@@ -161,6 +161,7 @@
     /* Main Video Content Area */
     #video-player-section-yt {
         aspect-ratio: 16 / 9;
+        min-height: 300px; /* Fallback height */
         background-color: #000000;
         border-radius: 12px; /* Keep rounded corners */
         overflow: hidden;
