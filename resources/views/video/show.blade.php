@@ -140,25 +140,33 @@
 @endsection
 
 @push('styles')
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
 <style>
     body {
-        background-color: #f9f9f9; /* YouTube's light mode background */
+        background-color: #f1f1f1; /* Slightly lighter gray than #f9f9f9 for a softer look */
         color: #0f0f0f; /* YouTube's primary text color */
+        font-family: 'Roboto', sans-serif; /* Standard YouTube font */
     }
     .video-page-container-yt {
-        margin-top: 20px;
-        margin-bottom: 30px;
-        max-width: 1700px; /* Max width like YouTube */
+        padding-top: 24px; /* Standard YouTube top padding */
+        padding-bottom: 24px;
+        max-width: calc(1280px + 2 * 24px); /* Based on common YouTube content width + padding */
+        margin-left: auto;
+        margin-right: auto;
     }
 
     /* Main Video Content Area */
     #video-player-section-yt {
-        aspect-ratio: 16 / 9; /* Maintain 16:9 aspect ratio */
-        background-color: #000000; /* Black background for player area */
-        border-radius: 12px; /* Rounded corners for player */
+        aspect-ratio: 16 / 9;
+        background-color: #000000;
+        border-radius: 12px; /* Keep rounded corners */
         overflow: hidden;
-        position: relative; /* For absolute positioning of overlays/play buttons */
+        position: relative;
+        margin-bottom: 16px; /* Space below player */
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Subtle shadow for depth */
     }
 
     /* Locked State Styling */
@@ -266,158 +274,221 @@
 
     /* Video Info Below Player */
     .video-info-yt .video-title-yt {
-        font-size: 1.4rem; /* YouTube title size is around 20px */
-        font-weight: 600;
-        margin-top: 12px;
+        font-size: 20px; /* YouTube title size */
+        font-weight: 600; /* Bolder */
+        margin-top: 0; /* Player has margin-bottom */
         margin-bottom: 8px;
-        line-height: 1.3;
+        line-height: 1.35;
+        color: #0f0f0f;
     }
     .video-info-yt .video-meta-yt {
-        font-size: 0.9rem;
-        color: #606060; /* YouTube secondary text color */
-        margin-bottom: 10px;
+        font-size: 14px; /* YouTube meta text size */
+        color: #606060;
+        margin-bottom: 12px; /* More space before actions */
     }
     .video-info-yt .video-actions-yt .btn {
-        font-size: 0.85rem;
-        padding: .3rem .7rem;
+        background-color: rgba(0,0,0,0.05); /* Light gray background for buttons */
+        border: none;
+        color: #0f0f0f;
+        font-size: 14px; /* Standard button text size */
+        font-weight: 500;
+        padding: 6px 12px; /* Adjust padding */
+        border-radius: 18px; /* Pill-shaped buttons */
+    }
+    .video-info-yt .video-actions-yt .btn:hover {
+        background-color: rgba(0,0,0,0.1);
     }
     .video-info-yt .video-actions-yt .btn i {
-        font-size: 1.1rem; /* Slightly larger icons */
-        vertical-align: middle;
+        font-size: 18px; /* Icon size */
+        vertical-align: text-bottom; /* Better alignment */
+        margin-right: 6px; /* Space between icon and text */
+    }
+     .video-info-yt .video-actions-yt .btn:last-child {
+        margin-right: 0;
     }
 
+
     .uploader-info-yt img {
-        width: 48px;
-        height: 48px;
+        width: 40px; /* Standard avatar size */
+        height: 40px;
     }
     .uploader-info-yt .uploader-name-yt {
-        font-size: 1rem;
+        font-size: 16px; /* Standard name size */
         font-weight: 500;
+        color: #0f0f0f;
     }
     .uploader-info-yt .subscriber-count-yt {
-        font-size: 0.8rem;
+        font-size: 12px; /* Smaller text for subscriber count */
         color: #606060;
     }
-    .uploader-info-yt .btn-danger {
-        background-color: #c00;
+    .uploader-info-yt .btn-danger { /* Subscribe button */
+        background-color: #cc0000; /* YouTube red */
         border: none;
-        font-size: 0.9rem;
+        color: #fff;
+        font-size: 14px;
         font-weight: 500;
-        padding: .4rem 1rem;
+        padding: 8px 16px; /* Standard button padding */
+        border-radius: 18px; /* Pill shape */
+    }
+     .uploader-info-yt .btn-danger:hover {
+        background-color: #990000; /* Darker red on hover */
     }
 
     .video-description-yt {
-        font-size: 0.9rem;
+        font-size: 14px;
         color: #0f0f0f;
-        background-color: rgba(0,0,0,0.05) !important; /* YouTube's light gray for description box */
-        border-radius: 8px;
+        background-color: rgba(0,0,0,0.05);
+        border-radius: 12px; /* More rounded corners */
+        padding: 12px 16px; /* Adjust padding */
         margin-top: 16px;
-        line-height: 1.5;
+        line-height: 1.6; /* Better readability */
+        cursor: pointer; /* To indicate it's expandable */
     }
     .video-description-yt p {
-        margin-bottom: 0.5rem;
+        margin-bottom: 4px;
+    }
+    .video-description-yt strong { /* For "Show more/less" */
+        font-weight: 500;
+        color: #065fd4; /* YouTube blue link color */
     }
 
 
     /* Comments Section */
-    .comments-section-yt.card {
-        background-color: transparent; /* Make card background transparent */
-        border: none; /* Remove card border */
+    .comments-section-yt { /* Removed .card styling, treat as a block */
+        margin-top: 24px;
     }
-    .comments-section-yt .card-header {
+    .comments-section-yt .card-header { /* This is now just a heading for comments count */
         background-color: transparent;
-        border-bottom: 1px solid #e0e0e0;
-        padding-left: 0;
-        padding-right: 0;
-        font-size: 1.1rem;
+        border-bottom: none; /* No line under "Comments" header text */
+        padding: 0 0 16px 0; /* Space below comments count */
+        font-size: 18px; /* Comments count text size */
         font-weight: 500;
+        color: #0f0f0f;
     }
     .comments-section-yt .card-body {
-        padding: 20px 0; /* Remove side padding */
+        padding: 0; /* No padding for the body, direct children will have margins */
     }
     .add-comment-yt {
         display: flex;
         align-items: center;
+        margin-bottom: 24px; /* Space after add comment field */
     }
-    .add-comment-yt img {
+    .add-comment-yt img { /* User avatar for new comment */
         width: 40px;
         height: 40px;
+        margin-right: 12px;
     }
     .add-comment-yt .form-control {
         border: none;
-        border-bottom: 1px solid #ccc;
+        border-bottom: 1px solid #cccccc; /* Lighter bottom border */
         border-radius: 0;
-        padding-left: 0;
+        padding: 8px 0; /* Adjust padding */
+        font-size: 14px;
         box-shadow: none;
+        background-color: transparent;
     }
      .add-comment-yt .form-control:focus {
-        border-bottom: 2px solid #0f0f0f;
+        border-bottom: 2px solid #0f0f0f; /* Standard focus indicator */
      }
 
     .comment-yt {
-        padding-bottom: 15px;
-        margin-bottom: 15px;
-        border-bottom: 1px solid #e9e9e9;
+        padding-bottom: 16px;
+        margin-bottom: 16px;
+        border-bottom: 1px solid #e0e0e0; /* Lighter separator for comments */
     }
     .comment-yt:last-child {
         border-bottom: none;
+        margin-bottom: 0;
     }
-    .comment-yt img {
+    .comment-yt img { /* Commenter's avatar */
         width: 40px;
         height: 40px;
+        margin-right: 12px;
     }
-    .comment-yt strong {
-        font-size: 0.85rem;
+    .comment-yt strong { /* Commenter's name */
+        font-size: 13px; /* Slightly smaller name */
         font-weight: 500;
-    }
-    .comment-yt p {
-        font-size: 0.9rem;
-        line-height: 1.4;
         color: #0f0f0f;
+        margin-right: 6px;
+    }
+    .comment-yt small.text-muted { /* Timestamp */
+        font-size: 12px;
+        color: #606060;
+    }
+    .comment-yt p { /* Comment text */
+        font-size: 14px;
+        line-height: 1.5;
+        color: #0f0f0f;
+        margin-top: 4px; /* Space between name/timestamp and text */
+    }
+    .comment-actions-yt {
+        margin-top: 8px;
     }
     .comment-actions-yt a {
-        font-size: 0.8rem;
+        font-size: 12px; /* Smaller action links */
         color: #606060;
         text-decoration: none;
+        margin-right: 16px; /* Space between actions */
     }
     .comment-actions-yt a:hover {
         color: #0f0f0f;
     }
     .comment-actions-yt i {
-        font-size: 0.9rem;
+        font-size: 16px; /* Icon size for like/dislike */
+        vertical-align: text-bottom;
     }
 
 
     /* Sidebar: Suggested Videos */
-    .video-sidebar-yt h4 {
-        font-size: 1rem;
-        font-weight: 500;
+    .video-sidebar-yt {
+        padding-left: 24px;
     }
-    .suggested-video-yt .thumbnail-yt img {
-        width: 168px; /* Standard YouTube suggested video thumbnail width */
-        height: 94px; /* Standard YouTube suggested video thumbnail height */
-        border-radius: 8px;
-        object-fit: cover;
-    }
-    .suggested-video-yt .info-yt .title-yt {
-        font-size: 0.9rem;
+    .video-sidebar-yt > h4 { /* "Up next" heading, direct child */
+        font-size: 16px;
         font-weight: 500;
         color: #0f0f0f;
-        line-height: 1.3;
-        max-height: 2.6em; /* Limit to 2 lines */
+        margin-bottom: 16px; /* More space below "Up next" */
+    }
+    .suggested-video-yt { /* Container for each suggested video item */
+        display: flex;
+        margin-bottom: 8px; /* Tighter spacing between suggested videos */
+        align-items: flex-start; /* Align items to the top */
+    }
+    .suggested-video-yt .thumbnail-yt {
+        margin-right: 8px; /* Space between thumbnail and info */
+    }
+    .suggested-video-yt .thumbnail-yt img {
+        width: 160px; /* Slightly smaller thumbnail */
+        height: 90px;
+        border-radius: 4px; /* Less pronounced radius */
+        object-fit: cover;
+        background-color: #e0e0e0; /* Placeholder bg */
+    }
+    .suggested-video-yt .info-yt .title-yt {
+        font-size: 14px; /* Standard text size for titles */
+        font-weight: 500;
+        color: #0f0f0f;
+        line-height: 1.4;
+        max-height: 2.8em; /* Approx 2 lines with 1.4 line-height */
         overflow: hidden;
         text-overflow: ellipsis;
         display: -webkit-box;
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
+        margin-bottom: 4px; /* Space below title */
     }
     .suggested-video-yt .info-yt .channel-yt,
     .suggested-video-yt .info-yt .views-yt {
-        font-size: 0.8rem;
+        font-size: 12px; /* Smaller text for channel/views */
         color: #606060;
+        line-height: 1.3;
     }
     .suggested-video-yt:hover .info-yt .title-yt {
-        color: #cc0000; /* Or keep it black if preferred */
+        color: #030303; /* Standard hover for links, no red needed here */
+    }
+    .suggested-video-yt:hover {
+        background-color: rgba(0,0,0,0.03); /* Subtle hover for the whole item */
+        border-radius: 4px;
     }
 
 
@@ -512,441 +583,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     renderUI();
 
-    window.testSetPurchased = function(status) {
-        hasPurchased = status;
-        renderUI();
-    };
-});
-</script>
-@endpush
-                            </div>
-                        </div>
-                    @endfor
-                    <div class="mt-3">
-                        <textarea class="form-control" rows="2" placeholder="Add a comment..."></textarea>
-                        <button class="btn btn-primary btn-sm mt-2">Post Comment</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Right Column: Video Player and Purchase Info -->
-        <div class="col-lg-8 video-main-content order-lg-2">
-            <div id="video-player-section" class="position-relative">
-                {{-- This content will be dynamically updated by JavaScript --}}
-            </div>
-        </div>
-    </div> <!-- End of the row for comments and video player -->
-
-    <!-- Suggested Videos Section - moved outside and below the main content row -->
-    <div id="suggested-videos-section" class="mt-4 pt-4 border-top">
-        <div class="container-fluid"> {{-- Use container-fluid or container as needed for width control --}}
-            <h3>Suggested Videos</h3>
-            <div class="row">
-                @for ($i = 0; $i < 4; $i++)
-                    <div class="col-lg-3 col-md-4 col-sm-6 mb-3"> {{-- Adjusted for potentially 4 items in a full row --}}
-                        <div class="card suggestion-card">
-                            <div class="suggestion-thumbnail">
-                                <small>Thumbnail {{ $i + 1 }}</small>
-                            </div>
-                            <div class="card-body">
-                                <h6 class="card-title">Suggested Video {{ $i + 1 }}</h6>
-                                <p class="card-text"><small class="text-muted">Channel Name</small></p>
-                            </div>
-                        </div>
-                    </div>
-                @endfor
-            </div>
-        </div>
-    </div>
-</div>
-
-{{-- Initial state templates to be used by JavaScript --}}
-<template id="video-locked-template">
-    <div class="video-player-locked-state">
-        <div class="video-player-background blurred"> {{-- Blur class might be adjusted/removed later --}}
-            <div class="dummy-player-content" style="background-image: url('https://placehold.co/800x450/2d2d2d/e0e0e0?text=Video+Thumbnail'); position: relative;">
-                {{-- Adding a fake play icon in the center to make it look more like a player --}}
-                <div class="fake-play-icon-static">▶</div>
-            </div>
-        </div>
-        <div class="purchase-overlay">
-            <div class="overlay-content text-center">
-                <div class="icon-lock mb-2" style="font-size: 2.5rem;">🔑</div>
-                <h3>Unlock Video</h3>
-                <p>Watch this video for only <strong class="video-price">{{ $videoPrice }}</strong></p>
-                <button id="pay-to-watch-btn" class="btn btn-warning btn-lg">Pay {{ $videoPrice }} to Watch</button>
-            </div>
-        </div>
-    </div>
-</template>
-
-<template id="video-player-template">
-    <div class="video-player-unlocked-state">
-        <div class="video-player-background">
-            <div class="dummy-player-content" style="background-image: url('https://placehold.co/800x450/1a1a1a/e0e0e0?text=Video+Playing...'); position: relative;">
-                {{-- The new smaller play button will be dynamically added here by JS --}}
-            </div>
-        </div>
-    </div>
-</template>
-
-@endsection
-
-@push('styles')
-<style>
-    body {
-        background-color: #f4f7f6; /* Light gray background for the whole page */
-    }
-    .video-page-container {
-        margin-top: 20px;
-        margin-bottom: 30px;
-    }
-
-    /* Video Player Area (Right Column) */
-    .video-main-content {
-        /* padding-right: 25px; */ /* Original: space between video and comments */
-        /* Now video is on right, comments on left, Bootstrap handles gutter */
-    }
-
-    #video-player-section {
-        min-height: 450px; /* Ensure it has some height before JS loads content */
-        background-color: #f0f0f0; /* Placeholder BG for the section itself */
-        border-radius: 12px;
-        overflow: hidden; /* Important for containing blurred elements */
-    }
-
-    /* Locked State Styling */
-    .video-player-locked-state {
-        position: relative;
-        width: 100%;
-        height: 100%;
-        min-height: 450px; /* Match parent section */
-    }
-    .video-player-background { /* This class is on the container of dummy-player-content */
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-size: cover; /* Should not be needed here if dummy-player-content has the bg image */
-        background-position: center; /* Same as above */
-        border-radius: 12px; /* Match parent container's rounding */
-        /* If we want a border around the whole player area, it could go here or on #video-player-section */
-    }
-    /* Removing the .blurred class and its effects for now to make the player more identifiable */
-    /* .video-player-background.blurred .dummy-player-content {
-        filter: blur(8px);
-        transform: scale(1.05);
-    } */
-    .dummy-player-content { /* This is the div with the background image */
-        width: 100%;
-        height: 100%;
-        min-height: 450px; /* Ensure it fills the space */
-        background-size: cover;
-        background-position: center;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        color: white; /* For any text inside, if needed */
-        transition: filter 0.3s ease-in-out; /* Smooth transition for blur removal */
-    }
-
-    .purchase-overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.6); /* Dark semi-transparent overlay */
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 10;
-        border-radius: 12px; /* Match parent container's rounding */
-    }
-    .purchase-overlay .overlay-content {
-        background-color: rgba(255, 255, 255, 0.95); /* Slightly transparent white card */
-        padding: 30px 40px;
-        border-radius: 10px;
-        box-shadow: 0 5px 20px rgba(0,0,0,0.2);
-        color: #333;
-    }
-    .purchase-overlay .icon-lock {
-        color: #ffc107; /* Bootstrap warning yellow */
-    }
-    .purchase-overlay h3 {
-        font-weight: 600;
-        margin-bottom: 10px;
-    }
-    .purchase-overlay .video-price {
-        color: #28a745; /* Bootstrap's success color */
-        font-size: 1.2rem;
-        font-weight: 700;
-    }
-    #pay-to-watch-btn { /* Specific ID for the pay button */
-        background-color: #ffc107; /* Bootstrap warning yellow */
-        border-color: #ffc107;
-        color: #212529; /* Dark text for yellow button */
-        padding: 10px 25px;
-        font-size: 1.1rem;
-        font-weight: bold;
-        margin-top: 15px;
-        transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
-    }
-    #pay-to-watch-btn:hover {
-        background-color: #e0a800;
-        border-color: #d39e00;
-    }
-
-    /* Unlocked State Styling */
-    .video-player-unlocked-state {
-        position: relative; /* For play button overlay */
-        width: 100%;
-        height: 100%;
-        min-height: 450px; /* Match parent section */
-    }
-    .video-player-unlocked-state .play-button-overlay {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        color: rgba(255, 255, 255, 0.8); /* Semi-transparent white */
-        cursor: pointer;
-        z-index: 5; /* Below purchase overlay if it were there, but above video content */
-        transition: color 0.2s ease-in-out, transform 0.2s ease-in-out;
-    }
-    .video-player-unlocked-state .play-button-overlay:hover {
-        color: rgba(255, 255, 255, 1); /* Fully opaque white */
-        transform: translate(-50%, -50%) scale(1.1);
-    }
-    .video-player-unlocked-state .play-button-overlay svg {
-        filter: drop-shadow(0 0 5px rgba(0,0,0,0.5)); /* Add a subtle shadow to the play icon */
-    }
-
-
-    /* Comments Section (Left Column) */
-    .video-sidebar {
-        padding-right: 20px; /* Add some space to its right, before video player column */
-    }
-    .video-sidebar .comments-section.card {
-        border-radius: 12px;
-        border: 1px solid #e0e0e0;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-        background-color: #fff;
-    }
-    .video-sidebar .comments-section .card-header {
-        background-color: #f8f9fa; /* Light header */
-        border-bottom: 1px solid #e0e0e0;
-        border-top-left-radius: 12px;
-        border-top-right-radius: 12px;
-    }
-    .video-sidebar .comments-section .card-header h4 {
-        margin-bottom: 0;
-        font-size: 1.25rem;
-        font-weight: 600;
-        color: #343a40;
-    }
-    .comments-section .card-body {
-        padding: 20px;
-    }
-    .comment {
-        padding-bottom: 15px;
-        margin-bottom: 15px;
-        border-bottom: 1px solid #eee; /* Lighter separator */
-    }
-    .comment:last-child {
-        border-bottom: none;
-        margin-bottom: 0;
-        padding-bottom: 0;
-    }
-    .comment img {
-        width: 40px;
-        height: 40px;
-        border: 1px solid #ddd; /* Subtle border for avatar */
-    }
-    .comment strong {
-        color: #007bff; /* Highlight username */
-    }
-    .comment p {
-        font-size: 0.95rem;
-        color: #555;
-        line-height: 1.5;
-    }
-    .comments-section textarea.form-control {
-        border-radius: 8px;
-        border-color: #ced4da;
-    }
-    .comments-section .btn-primary {
-        background-color: #007bff;
-        border-color: #007bff;
-        border-radius: 8px;
-        font-weight: 500;
-    }
-
-    /* Suggested Videos Section */
-    #suggested-videos-section h3 {
-        margin-bottom: 20px;
-        font-weight: 600;
-        color: #343a40;
-        font-size: 1.5rem;
-    }
-    .suggestion-card.card {
-        border-radius: 10px;
-        border: 1px solid #e0e0e0;
-        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-        background-color: #fff;
-    }
-    .suggestion-card.card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 15px rgba(0,0,0,0.08);
-    }
-    .suggestion-card .suggestion-thumbnail {
-        height: 130px; /* Slightly taller */
-        background-color: #e9ecef; /* Lighter placeholder */
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #6c757d;
-        font-weight: 500;
-        border-top-left-radius: 10px;
-        border-top-right-radius: 10px;
-    }
-    .suggestion-card .card-body {
-        padding: 12px;
-    }
-    .suggestion-card .card-title {
-        font-size: 0.95rem;
-        font-weight: 600;
-        margin-bottom: 5px;
-        color: #343a40;
-    }
-    .suggestion-card .card-text small {
-        font-size: 0.8rem;
-        color: #6c757d;
-    }
-
-    /* Responsive adjustments */
-    @media (max-width: 991.98px) { /* lg breakpoint */
-        .video-main-content {
-            padding-right: 15px; /* Reset padding */
-            margin-bottom: 20px;
-        }
-        .video-player-wrapper .dummy-player {
-            height: 350px; /* Adjust for smaller screens */
-        }
-    }
-    @media (max-width: 767.98px) { /* md breakpoint */
-        .video-player-wrapper .dummy-player {
-            height: 250px;
-        }
-        .video-placeholder-locked {
-            padding: 25px 15px;
-        }
-        .video-placeholder-locked .icon-lock {
-            font-size: 2.5rem;
-        }
-        .video-placeholder-locked h3 {
-            font-size: 1.5rem;
-        }
-        .video-placeholder-locked .video-price {
-            font-size: 1.4rem;
-        }
-        #pay-to-watch-btn {
-            padding: 10px 20px;
-            font-size: 1rem;
-        }
-        .suggestion-card .suggestion-thumbnail {
-            height: 110px;
-        }
-    }
-
-    .dynamic-play-button {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background-color: rgba(0, 0, 0, 0.6);
-        color: white;
-        border: 2px solid white;
-        border-radius: 50%; /* Circular button */
-        width: 60px;
-        height: 60px;
-        font-size: 24px; /* Size of the '▶' icon */
-        line-height: 56px; /* Vertically center icon text, account for border */
-        text-align: center; /* Horizontally center icon text */
-        cursor: pointer;
-        transition: background-color 0.2s ease, transform 0.2s ease;
-        z-index: 5; /* Ensure it's above the dummy-player-content background image */
-    }
-    .dynamic-play-button:hover {
-        background-color: rgba(0, 0, 0, 0.8);
-        transform: translate(-50%, -50%) scale(1.1);
-    }
-
-</style>
-@endpush
-
-@push('scripts')
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    const videoPlayerSection = document.getElementById('video-player-section');
-    const suggestedVideosSection = document.getElementById('suggested-videos-section');
-    const videoLockedTemplateHTML = document.getElementById('video-locked-template').innerHTML;
-    const videoPlayerTemplateHTML = document.getElementById('video-player-template').innerHTML;
-    const videoPrice = "{{ $videoPrice }}"; // Get video price from PHP
-
-    let hasPurchased = {{ $hasPurchasedInitially ? 'true' : 'false' }};
-
-    function renderUI() {
-        // Suggested videos are now always visible, so no JS manipulation needed for its display.
-        if (hasPurchased) {
-            videoPlayerSection.innerHTML = videoPlayerTemplateHTML;
-
-            // Dynamically create and add the new smaller play button
-            const dummyPlayerContent = videoPlayerSection.querySelector('.dummy-player-content');
-            if (dummyPlayerContent) {
-                const newPlayButton = document.createElement('div');
-                newPlayButton.className = 'dynamic-play-button';
-                newPlayButton.innerHTML = '▶'; // Play icon character
-
-                newPlayButton.addEventListener('click', function() {
-                    alert('Video playback would start now!');
-                    newPlayButton.style.display = 'none'; // Hide the button after click
-                    // Here you might also trigger actual video play if it were a real player
-                });
-
-                dummyPlayerContent.appendChild(newPlayButton);
-            }
-
-        } else {
-            videoPlayerSection.innerHTML = videoLockedTemplateHTML;
-            // CSS handles blur and overlay visibility based on classes in the template
-            attachPayButtonListener();
-        }
-    }
-
-    function attachPayButtonListener() {
-        const payButton = document.getElementById('pay-to-watch-btn');
-        if (payButton) {
-            payButton.addEventListener('click', function() {
-                // Updated confirmation message
-                if (confirm(videoPrice + " will be deducted from your wallet. Pay Now?")) {
-                    // No immediate alert, success is implied by UI change
-                    hasPurchased = true;
-                    renderUI(); // Re-render UI for unlocked state
-                } else {
-                    alert("Payment cancelled.");
-                }
-            });
-        }
-    }
-
-    // Initial render
-    renderUI();
-
-    // Expose a way to test states
     window.testSetPurchased = function(status) {
         hasPurchased = status;
         renderUI();
